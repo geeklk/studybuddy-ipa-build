@@ -1,0 +1,51 @@
+name: Build Study Buddy IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    # Public repositories can use standard GitHub-hosted macOS runners for free.
+    runs-on: macos-15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build unsigned iOS app for TrollStore
+        run: |
+          xcodebuild \
+            -project StudyBuddy.xcodeproj \
+            -scheme StudyBuddy \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY='' \
+            build
+
+      - name: Package IPA
+        run: |
+          APP_PATH="build/DerivedData/Build/Products/Release-iphoneos/StudyBuddy.app"
+          test -d "$APP_PATH"
+          mkdir -p package/Payload
+          cp -R "$APP_PATH" package/Payload/StudyBuddy.app
+          cd package
+          /usr/bin/zip -qry ../StudyBuddy.ipa Payload
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: StudyBuddy-IPA
+          path: StudyBuddy.ipa
+          if-no-files-found: error
+          retention-days: 14

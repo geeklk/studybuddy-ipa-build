@@ -1,0 +1,31 @@
+name: StudyBuddy
+options:
+  bundleIdPrefix: com.lkgeek
+  deploymentTarget:
+    iOS: "15.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    IPHONEOS_DEPLOYMENT_TARGET: "15.0"
+    TARGETED_DEVICE_FAMILY: "1"
+targets:
+  StudyBuddy:
+    type: application
+    platform: iOS
+    sources:
+      - path: StudyBuddy
+        excludes:
+          - Info.plist
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.lkgeek.studybuddy
+        PRODUCT_NAME: StudyBuddy
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        INFOPLIST_FILE: StudyBuddy/Info.plist
+        GENERATE_INFOPLIST_FILE: NO
+        CODE_SIGNING_ALLOWED: NO
+        CODE_SIGNING_REQUIRED: NO
+        CODE_SIGN_IDENTITY: ""
+        ARCHS: arm64
+        VALID_ARCHS: arm64
